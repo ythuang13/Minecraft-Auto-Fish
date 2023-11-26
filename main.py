@@ -3,13 +3,11 @@ import numpy as np
 import os
 import time
 import pytesseract
-import mouse
 import sys
 import win32gui, win32ui, win32con
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 from windowcapture import grab_screen, list_window_names, find_target_window
-
 
 # Change the working directory to the folder this script is in.
 # Doing this because I'll be putting the files from each video in their own folder on GitHub
@@ -19,10 +17,6 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 SCALE_FACTOR = 1
 WINDOW_WIDTH = int(2560 * SCALE_FACTOR)
 WINDOW_HEIGHT = int(1440 * SCALE_FACTOR)
-
-# call to list window names
-list_window_names()
-
 
 def auto_canny(image, sigma=0.33):
 	# compute the median of the single channel pixel intensities
@@ -48,18 +42,22 @@ def process_img(original_img):
     return processed_img
 
 def main():
+    # call to list window names
+    list_window_names()
+
     # initialize the WindowCapture class
     loop_time = time.time()
 
     try:
         argv1 = sys.argv[1]
     except IndexError:
-        argv1 = "Minecraft"
+        argv1 = "Minecraft 1."
 
-    target_window = find_target_window(argv1)
+    target_window: str = find_target_window(argv1)
     hwnd = win32gui.FindWindow(None, target_window)
     win = win32ui.CreateWindowFromHandle(hwnd)
     print(target_window)
+    print("press q to quit")
 
     just_fished = False
     counter = 1 
