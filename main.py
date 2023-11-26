@@ -42,16 +42,16 @@ def process_img(original_img):
     return processed_img
 
 def main():
-    # call to list window names
-    list_window_names()
+    # call to list window names (debug)
+    # list_window_names()
 
-    # initialize the WindowCapture class
-    loop_time = time.time()
+    # initialize the WindowCapture class (debug)
+    # loop_time = time.time()
 
     try:
         argv1 = sys.argv[1]
     except IndexError:
-        argv1 = "Minecraft 1."
+        argv1 = "Minecraft*"
 
     target_window: str = find_target_window(argv1)
     hwnd = win32gui.FindWindow(None, target_window)
@@ -59,12 +59,20 @@ def main():
     print(target_window)
     print("press q to quit")
 
+    # grab game window size
+    rect = win32gui.GetWindowRect(hwnd)
+    x = rect[0]
+    y = rect[1]
+    w = rect[2] - x
+    h = rect[3] - y
+    print(f"{x=}, {y=}, {w=}, {h=}")
+
     just_fished = False
     counter = 1 
     while True:
         # get an updated image of the game
-        original_img = grab_screen((2130, 1030, 2560, 1320), target_window) # minecraft audio subtitle
-        
+        original_img = grab_screen((w-500, h-400, w-10, h-80), target_window) # minecraft audio subtitle
+
         # processing the image
         processed_img = original_img
         # processed_img = process_img(original_img)
@@ -78,7 +86,7 @@ def main():
 
         # debug the loop rate
         # print(f'FPS {1 / (time.time() - loop_time):.2f}')
-        loop_time = time.time()
+        # loop_time = time.time()
 
         # press 'q' with the output window focused to exit.
         # waits 1 ms every loop to process key presses
@@ -93,21 +101,17 @@ def main():
         if not just_fished and "obber splashes" in img2Str:
             print(f"Fishing Bobber splashes {counter}")
             counter += 1
-            # mouse.click('right')
             win.SendMessage(win32con.WM_RBUTTONDOWN, 0x0, 0)
             win.SendMessage(win32con.WM_RBUTTONUP, 0x0, 0) 
             time.sleep(1)
             win.SendMessage(win32con.WM_RBUTTONDOWN, 0x0, 0)
             win.SendMessage(win32con.WM_RBUTTONUP, 0x0, 0) 
-            # mouse.click('right')
             just_fished = True
         elif just_fished:
             time.sleep(3)
             just_fished = False
-        
-        time.sleep(0.4)
 
-    print('Done.')
+        time.sleep(0.4)
 
 if __name__ == '__main__':
     main()
