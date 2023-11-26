@@ -44,7 +44,7 @@ def grab_screen(region=None, window_name=None):
 
 def list_window_names():
     def winEnumHandler(hwnd, ctx):
-        if win32gui.IsWindowVisible(hwnd):
+        if win32gui.IsWindowVisible(hwnd) and win32gui.GetWindowText(hwnd):
             print(hex(hwnd), win32gui.GetWindowText(hwnd))
     win32gui.EnumWindows(winEnumHandler, None)
 
