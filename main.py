@@ -51,7 +51,11 @@ def main():
     # initialize the WindowCapture class
     loop_time = time.time()
 
-    argv1 = sys.argv[1]
+    try:
+        argv1 = sys.argv[1]
+    except IndexError:
+        argv1 = "Minecraft"
+
     target_window = find_target_window(argv1)
     hwnd = win32gui.FindWindow(None, target_window)
     win = win32ui.CreateWindowFromHandle(hwnd)
